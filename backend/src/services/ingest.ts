@@ -20,10 +20,14 @@ export async function ingestArticles() {
     const chunks = splitIntoChunks(article.content, 500);
     for (const chunk of chunks) {
       const embedding = await embedText(chunk);
-      await vectorStore.upsert({
-        id: uuidv4(),
-        values: embedding,
-        metadata: { text: chunk, title: article.title },
+      await vectorStore.upsert("news", {
+        points: [
+          {
+            id: uuidv4(),
+            vector: embedding,
+            payload: { text: chunk, title: article.title },
+          },
+        ],
       });
     }
   }
