@@ -1,9 +1,9 @@
 import { createClient } from "redis";
 
-const redis = createClient({ url: process.env.REDIS_URL });
+const redis = createClient({ url: process.env.REDIS_URL } as any);
 redis.connect();
 
-export async function saveMessage(sessionId: string, role: "user" | "bot", text: string) {
+export async function saveMessage(sessionId: any, role: "user" | "bot", text: string) {
   await redis.rPush(`session:${sessionId}`, JSON.stringify({ role, text }));
   await redis.expire(`session:${sessionId}`, 1800); // TTL 30min
 }
